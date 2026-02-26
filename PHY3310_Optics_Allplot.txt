@@ -1,0 +1,122 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+fig, ax = plt.subplots(1, figsize = (9,9))
+
+# BLUE
+df = pd.read_csv('PHY3310/Lab/BlueLaser_mm (2).csv')
+df.head()
+data = df.values
+#Grab values from csv, make sure theyre floats
+L_arr = np.array(df['L'], dtype = float)
+xl_arr = np.array(df['xl'], dtype = float)
+xr_arr = np.array(df['xr'], dtype = float)
+#Set it up, its looking at displacement from the 500mm mid point
+xl_orig_arr = 500.0 - xl_arr
+xr_orig_arr = xr_arr - 500
+#average the displacements
+x_avg_arr = (xl_orig_arr + xr_orig_arr) / 2.0
+x_avg_arr
+ax.scatter(L_arr, x_avg_arr)
+arr_length = len(L_arr)
+x_errors = np.zeros(arr_length) + .1
+y_errors = np.zeros(arr_length) + .20
+x_errors
+ax.errorbar(L_arr, x_avg_arr, xerr = x_errors, yerr = y_errors, fmt = 'o', color = "Blue")
+p, cov = np.polyfit(L_arr, x_avg_arr, 1, cov=True)
+y_theory = L_arr * p[0] + p[1]
+ax.plot(L_arr, y_theory, color = "Blue")
+print(cov)
+diagonal_elements = np.diag(cov)
+print(diagonal_elements)
+coeffs_sigmas = np.sqrt(diagonal_elements)
+ax.set_xlabel("L (mm)")
+ax.set_ylabel("$x_{avg}$ (mm)")
+t_flabel = r'$x_{avg}$ = (0.444 $\pm$ 0.001) L + (-1.5 $\pm$ 0.6) mm'
+ax.text(200, 50, t_flabel, color = "Blue",fontsize = "15")
+ax.plot()
+X = L_arr.reshape(-1, 1)
+m = np.linalg.lstsq(X, x_avg_arr, rcond=None)
+slope = m[0]
+Y = slope*L_arr
+print(slope)
+# RED
+
+df = pd.read_csv('PHY3310/Lab/RedLaser_mm (2).csv')
+df
+data = df.values
+#Grab values from csv, make sure theyre floats
+L_arr = np.array(df['L'], dtype = float)
+xl_arr = np.array(df['xl'], dtype = float)
+xr_arr = np.array(df['xr'], dtype = float)
+#Set it up, its looking at displacement from the 500mm mid point
+xl_orig_arr = 500.0 - xl_arr
+xr_orig_arr = xr_arr - 500
+#average the displacements
+x_avg_arr = (xl_orig_arr + xr_orig_arr) / 2.0
+x_avg_arr
+ax.scatter(L_arr, x_avg_arr)
+arr_length = len(L_arr)
+x_errors = np.zeros(arr_length) + .10
+y_errors = np.zeros(arr_length) + .10
+ax.errorbar(L_arr, x_avg_arr, xerr = x_errors, yerr = y_errors, fmt = 'o',  color = "Red")
+p, cov = np.polyfit(L_arr, x_avg_arr, 1, cov=True)
+y_theory = L_arr * p[0] + p[1]
+ax.plot(L_arr, y_theory,  color = "Red")
+diagonal_elements = np.diag(cov)
+print(diagonal_elements)
+coeffs_sigmas = np.sqrt(diagonal_elements)
+ax.set_xlabel("L (mm)")
+ax.set_ylabel("$x_{avg}$ (mm)")
+t_flabel = r'$x_{avg}$ = (0.858 $\pm$ 0.002) L + (3.2 $\pm$ 0.6) mm'
+ax.text(200, 40, t_flabel, color = "Red", fontsize = "15")
+X = L_arr.reshape(-1, 1)
+m = np.linalg.lstsq(X, x_avg_arr, rcond=None)
+slope = m[0]
+Y = slope*L_arr
+print(slope)
+# GREEN
+
+df = pd.read_csv('PHY3310/Lab/GreenLazer_mm (2).csv')
+df.head()
+data = df.values
+#Grab values from csv, make sure theyre floats
+L_arr = np.array(df['L'], dtype = float)
+xl_arr = np.array(df['xl'], dtype = float)
+xr_arr = np.array(df['xr'], dtype = float)
+#Set it up, its looking at displacement from the 500mm mid point
+xl_orig_arr = 500.0 - xl_arr
+xr_orig_arr = xr_arr - 500
+#average the displacements
+x_avg_arr = (xl_orig_arr + xr_orig_arr) / 2.0
+x_avg_arr
+ax.scatter(L_arr, x_avg_arr)
+arr_length = len(L_arr)
+x_errors = np.zeros(arr_length) + .10
+y_errors = np.zeros(arr_length) + .10
+ax.errorbar(L_arr, x_avg_arr, xerr = x_errors, yerr = y_errors, fmt = 'o', color = "Green")
+p, cov = np.polyfit(L_arr, x_avg_arr, 1, cov=True)
+y_theory = L_arr * p[0] + p[1]
+ax.plot(L_arr, y_theory, color = "Green")
+diagonal_elements = np.diag(cov)
+print(diagonal_elements)
+coeffs_sigmas = np.sqrt(diagonal_elements)
+ax.set_xlabel("L (mm)")
+ax.set_ylabel("$x_{avg}$ (mm)")
+t_flabel = r'$x_{avg}$ = (0.624 $\pm$ 0.001) L + (1.9 $\pm$ .2) mm'
+ax.text(200,30, t_flabel, color = "Green",fontsize = "15")
+ax.plot()
+# Final formatting
+ax.set_xlabel("L (mm)", fontsize = "16")
+ax.set_ylabel("$x_{avg}$ (mm)",fontsize = "16")
+plt.xlim(0,600)
+plt.ylim(0,350)
+plt.savefig("3laserplot.png")
+plt.show()
+X = L_arr.reshape(-1, 1)
+m = np.linalg.lstsq(X, x_avg_arr, rcond=None)
+slope = m[0]
+Y = slope*L_arr
+print(slope)
